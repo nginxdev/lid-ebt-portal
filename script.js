@@ -6,6 +6,7 @@ let unansweredQuestions = quizData.length;  // Start with all questions unanswer
 
 // Retrieve stored answers from local storage (if any)
 let storedAnswers = JSON.parse(localStorage.getItem('quizAnswers')) || [];
+let mockQuestions = [];
 document.addEventListener('DOMContentLoaded', function() {
     const agreeModal = new bootstrap.Modal(document.getElementById('agreeModal'), {
         backdrop: 'static',
@@ -23,24 +24,47 @@ document.getElementById('quiz-container').addEventListener('wheel', function(eve
 }, { passive: false });
 
 function setMode(selectedMode) {
+    const lastMode = localStorage.getItem("mode");
     mode = selectedMode;
-    renderQuiz();
+    if( lastMode === "mock") {
+        resetQuiz();
+        localStorage.clear();
+    }
+    if (mode === "mock") {
+        localStorage.clear()
+        generateMockTest();
+    } else {
+        renderQuiz();
+        document.getElementById("submit-button").style.display = "none";
+    }
+    localStorage.setItem("mode", selectedMode);
     updateFloatingCounter();
     document.querySelector(".quiz-container").children[currentQuestion].scrollIntoView({ behavior: "smooth" });
 }
 
-function renderQuiz() {
+function generateMockTest() {
+    mockQuestions = [];
+    for (let i = 0; i < quizData.length; i += 10) {
+        const randomIndex = Math.floor(Math.random() * 10) + i;
+        mockQuestions.push(quizData[randomIndex]);
+    }
+    unansweredQuestions = mockQuestions.length;
+    renderQuiz(mockQuestions);
+}
+
+function renderQuiz(questions = quizData) {
+    storedAnswers = JSON.parse(localStorage.getItem('quizAnswers')) || [];
     const quizContainer = document.getElementById("quiz-container");
     const dropdownMenu = document.getElementById("questionDropdownMenu");
 
     quizContainer.innerHTML = "";
     dropdownMenu.innerHTML = "";
 
-    quizData.forEach((item, index) => {
+    questions.forEach((item, index) => {
         const card = document.createElement("div");
         card.className = "card overflow-scrolling";
         card.innerHTML = `
-            <h5>(${item.qNum}) ${item.q} ${item.image ? `,<button type="button" onclick="showImageModal('${item.image}')" class="btn btn-outline-success mt-0">Click for Image <i class="bi bi-image"></i></button>` : ""}</h5>
+            <h5>${mode !== "mock" ? '('+item.qNum+')' : "" } ${item.q} ${item.image ? `,<button type="button" onclick="showImageModal('${item.image}')" class="btn btn-outline-success mt-0">Click for Image <i class="bi bi-image"></i></button>` : ""}</h5>
             ${mode === "learning" ? `<p class='text-muted mb-0'>${item.tq}</p>` : ""}
             <div class='mt-3 w-100'>
                 ${Object.entries(item.o).map(([key, value]) => `
@@ -63,7 +87,6 @@ function renderQuiz() {
         dropdownItem.innerHTML = `<a class="dropdown-item" href="#" onclick="jumpToQuestion(${index})">Question ${index + 1}</a>`;
         dropdownMenu.appendChild(dropdownItem);
 
-        // If an answer has been saved for this question, mark the selected button
         if (storedAnswers[index]) {
             const selectedButton = document.querySelector(`#btn-${index}-${storedAnswers[index]}`);
             if (selectedButton) {
@@ -77,11 +100,12 @@ function renderQuiz() {
 }
 
 function handleAnswer(selected, correct, index, reset = false) {
-    if( reset) {
+    if (reset) {
         correctAnswers = 0;
         incorrectAnswers = 0;
     }
-    if (mode === "practice") {
+    if (mode !== "learning") {
+        const quizDataTemp = mode === "mock" ? mockQuestions : quizData;
         // Disable all the buttons for the current question
         const buttons = document.querySelectorAll(`#quiz-container .card:nth-child(${index + 1}) button`);
         buttons.forEach(button => {
@@ -90,9 +114,9 @@ function handleAnswer(selected, correct, index, reset = false) {
             button.classList.remove('correct-answer', 'wrong-answer');
 
             // Apply the correct and wrong answer styles
-            if (button.textContent.trim() === quizData[index].o[selected] && selected !== correct) {
+            if (button.textContent.trim() === quizDataTemp[index].o[selected] && selected !== correct) {
                 button.classList.add('wrong-answer');  // Selected wrong answer
-            } else if (button.textContent.trim() === quizData[index].o[correct]) {
+            } else if (button.textContent.trim() === quizDataTemp[index].o[correct]) {
                 button.classList.add('correct-answer');  // Correct answer
             }
         });
@@ -122,22 +146,37 @@ function handleAnswer(selected, correct, index, reset = false) {
 
 function updateFloatingButton() {
     const floatingButton = document.getElementById("floating-button");
-    floatingButton.textContent = `${currentQuestion + 1}/${quizData.length}`;
+    if (mode === "mock") {
+        floatingButton.textContent = `${currentQuestion + 1}/30`;
+    } else {
+        floatingButton.textContent = `${currentQuestion + 1}/${quizData.length}`;
+    }
 }
 
 function updateFloatingCounter() {
     const floatingCounter = document.getElementById("floating-counter");
     const resetButton = document.getElementById("reset-button");
-    if (mode === "practice") {
+    const mockResetButton = document.getElementById("mock-reset-button");
+    if(mode === "mock") {
+        mockResetButton.style.display = "block";
+        floatingCounter.style.display = "block";
+        resetButton.style.display = "none";
+    }else if (mode === "practice") {
         floatingCounter.style.display = "block";
         resetButton.style.display = "block";
+        mockResetButton.style.display = "none";
     } else {
         floatingCounter.style.display = "none";
         resetButton.style.display = "none";
+        mockResetButton.style.display = "none";
     }
     document.getElementById("correct-count").textContent = correctAnswers;
     document.getElementById("incorrect-count").textContent = incorrectAnswers;
     document.getElementById("unanswered-count").textContent = unansweredQuestions;
+    if(unansweredQuestions === 0) {
+        const score = Number(((correctAnswers / (correctAnswers + incorrectAnswers)) * 100).toFixed(2));
+        startFireworks(score,5000);
+    }
 }
 
 function goToNextQuestion() {
@@ -202,9 +241,18 @@ document.getElementById("reset-button").addEventListener("click", function() {
 
 // Confirm reset and call resetQuiz function
 document.getElementById("confirmResetButton").addEventListener("click", function() {
-    resetQuiz();
+    if(mode === "mock") {
+        setMode("mock");
+    }else{
+        resetQuiz();
+    }
     const resetWarningModal = bootstrap.Modal.getInstance(document.getElementById('resetWarningModal'));
     resetWarningModal.hide();
+});
+
+document.getElementById("mock-reset-button").addEventListener("click", function() {
+    const resetWarningModal = new bootstrap.Modal(document.getElementById('resetWarningModal'));
+    resetWarningModal.show();
 });
 
 renderQuiz();
@@ -223,3 +271,5 @@ const header = document.querySelector('.header-container');
 // Assign the container width to the footer
 footer.style.width = `${containerWidth}px`;
 header.style.width = `${containerWidth}px`;
+
+startFireworks(32,5000);
