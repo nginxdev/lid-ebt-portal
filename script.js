@@ -9,7 +9,7 @@ let practicePageNumber = 1;
 // Retrieve stored answers from local storage (if any)
 let storedAnswers = JSON.parse(localStorage.getItem('quizAnswers')) || [];
 document.addEventListener('DOMContentLoaded', function() {
-    var agreeModal = new bootstrap.Modal(document.getElementById('agreeModal'), {
+    const agreeModal = new bootstrap.Modal(document.getElementById('agreeModal'), {
         backdrop: 'static',
         keyboard: false
     });
