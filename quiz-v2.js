@@ -417,7 +417,7 @@ const quizData = [
   },
   a: a,
   r: "The correct answer is 'Image 1' because Image 1 shows the eagle, which is the coat of arms of the Federal Republic of Germany.",
-  image: "21.jpg"
+  image: "21.png"
 },
 {
   qNum: 22,
@@ -1097,7 +1097,7 @@ const quizData = [
   },
   a: a,
   r: "The correct answer is 'the Bundestag seat in Berlin' because the image shows the Reichstag building, which houses the German Bundestag.",
-  image: "55.jpg"
+  image: "55.png"
 },
 {
   qNum: 56,
@@ -1397,7 +1397,7 @@ const quizData = [
   },
   a: "d",
   r: "The correct answer is 'She/He proposes the Chancellor for election.' because the Federal President proposes the Chancellor for election to the Bundestag.",
-  image: "70.jpg"
+  image: "70.png"
 },
 {
   qNum: 71,
@@ -2597,7 +2597,7 @@ const quizData = [
   },
   a: a,
   r: "The correct answer is '1' because ballot paper 1 is marked correctly with one cross in each column, indicating a valid vote for both the first and second vote.",
-  image: "130.jpg"
+  image: "130.png"
 },
 {
   qNum: 131,
@@ -4317,7 +4317,7 @@ const quizData = [
   },
   a: a,
   r: "The correct answer is 'der Bundesadler' because the Federal Eagle is displayed in the plenary hall of the German Bundestag as a symbol of German sovereignty.",
-  image: "216.jpg"
+  image: "216.png"
 },
 {
   qNum: 217,
@@ -4517,7 +4517,7 @@ const quizData = [
   },
   away",
   r: "The correct answer is 'Image 2' because Image 2 shows the flag of the European Union, which consists of a circle of 12 golden stars on a blue background.",
-  image: "226.jpg"
+  image: "226.png"
 },
 {
   qNum: 227,
