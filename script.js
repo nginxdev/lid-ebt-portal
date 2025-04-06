@@ -3,8 +3,6 @@ let currentQuestion = 0;
 let correctAnswers = 0;
 let incorrectAnswers = 0;
 let unansweredQuestions = quizData.length;  // Start with all questions unanswered
-let learningPageNumber = 1;
-let practicePageNumber = 1;
 
 // Retrieve stored answers from local storage (if any)
 let storedAnswers = JSON.parse(localStorage.getItem('quizAnswers')) || [];
@@ -19,6 +17,7 @@ document.addEventListener('DOMContentLoaded', function() {
         agreeModal.hide();
     });
 });
+
 document.getElementById('quiz-container').addEventListener('wheel', function(event) {
     event.preventDefault();
 }, { passive: false });
@@ -27,6 +26,7 @@ function setMode(selectedMode) {
     mode = selectedMode;
     renderQuiz();
     updateFloatingCounter();
+    document.querySelector(".quiz-container").children[currentQuestion].scrollIntoView({ behavior: "smooth" });
 }
 
 function renderQuiz() {
@@ -41,19 +41,19 @@ function renderQuiz() {
         card.className = "card";
         card.innerHTML = `
             <h5>(${item.qNum}) ${item.q} ${item.image ? `,<button type="button" onclick="showImageModal('${item.image}')" class="btn btn-outline-success mt-0">Click for Image <i class="bi bi-image"></i></button>` : ""}</h5>
-            ${mode === "learning" ? `<p class='text-muted'>${item.tq}</p>` : ""}
+            ${mode === "learning" ? `<p class='text-muted mb-0'>${item.tq}</p>` : ""}
             <div class='mt-3 w-100'>
                 ${Object.entries(item.o).map(([key, value]) => `
                     <button class="btn w-100 mb-2 ${mode === 'learning' ? (key === item.a ? 'correct-answer' : 'disabled-button') : 'btn-outline-primary'}"
                             ${mode === 'learning' ? 'disabled' : ''}
                             onclick="handleAnswer('${key}', '${item.a}', ${index})"
                             id="btn-${index}-${key}">
-                        ${value} ${mode === "learning" ? `<span class='text-muted'>(${item.to[key]})</span>` : ""}
+                        ${value} ${mode === "learning" ? `<span class='text-muted mb-0 mt-2'>(${item.to[key]})</span>` : ""}
                     </button>
                 `).join('')}
             </div>
-            <p id="feedback-${index}" class="mt-2"></p>
-            <p id="explanation-${index}" class="mt-2 text-muted">
+            ${mode === "learning" ? "" : `<p id="feedback-${index}" class="mb-0 mt-2"></p>`}
+            <p id="explanation-${index}" class="text-muted mb-0 mt-2">
                 ${mode === "learning" ? item.r : ""}
             </p>
         `;
@@ -67,7 +67,7 @@ function renderQuiz() {
         if (storedAnswers[index]) {
             const selectedButton = document.querySelector(`#btn-${index}-${storedAnswers[index]}`);
             if (selectedButton) {
-                handleAnswer(storedAnswers[index], item.a, index);
+                handleAnswer(storedAnswers[index], item.a, index, reset = true);
             }
         }
     });
@@ -76,7 +76,11 @@ function renderQuiz() {
     updateFloatingCounter();
 }
 
-function handleAnswer(selected, correct, index) {
+function handleAnswer(selected, correct, index, reset = false) {
+    if( reset) {
+        correctAnswers = 0;
+        incorrectAnswers = 0;
+    }
     if (mode === "practice") {
         // Disable all the buttons for the current question
         const buttons = document.querySelectorAll(`#quiz-container .card:nth-child(${index + 1}) button`);
@@ -117,11 +121,8 @@ function handleAnswer(selected, correct, index) {
 }
 
 function updateFloatingButton() {
-    if (mode === "learning") {
-        document.getElementById("floating-button").textContent = `${learningPageNumber}/${quizData.length}`;
-    } else if (mode === "practice") {
-        document.getElementById("floating-button").textContent = `${practicePageNumber}/${quizData.length}`;
-    }
+    const floatingButton = document.getElementById("floating-button");
+    floatingButton.textContent = `${currentQuestion + 1}/${quizData.length}`;
 }
 
 function updateFloatingCounter() {
@@ -142,11 +143,6 @@ function updateFloatingCounter() {
 function goToNextQuestion() {
     if (currentQuestion < quizData.length - 1) {
         currentQuestion++;
-        if (mode === "learning") {
-            learningPageNumber++;
-        } else if (mode === "practice") {
-            practicePageNumber++;
-        }
         document.querySelector(".quiz-container").children[currentQuestion].scrollIntoView({ behavior: "smooth" });
         updateFloatingButton();
     }
@@ -155,11 +151,6 @@ function goToNextQuestion() {
 function goToPreviousQuestion() {
     if (currentQuestion > 0) {
         currentQuestion--;
-        if (mode === "learning") {
-            learningPageNumber--;
-        } else if (mode === "practice") {
-            practicePageNumber--;
-        }
         document.querySelector(".quiz-container").children[currentQuestion].scrollIntoView({ behavior: "smooth" });
         updateFloatingButton();
     }
@@ -174,11 +165,6 @@ function showImageModal(image) {
 
 function jumpToQuestion(index) {
     currentQuestion = index;
-    if (mode === "learning") {
-        learningPageNumber = index + 1;
-    } else if (mode === "practice") {
-        practicePageNumber = index + 1;
-    }
     document.querySelector(".quiz-container").children[currentQuestion].scrollIntoView({ behavior: "smooth" });
     updateFloatingButton();
 }
@@ -202,16 +188,38 @@ function resetQuiz() {
     // Re-render the quiz with the updated state
     renderQuiz();
 
+    jumpToQuestion(0);
+
     // Update the floating counter
     updateFloatingCounter();
 }
 
-// Attach the resetQuiz function to the reset button
-document.getElementById("reset-button").addEventListener("click", resetQuiz);
+// Show the reset warning modal
+document.getElementById("reset-button").addEventListener("click", function() {
+    const resetWarningModal = new bootstrap.Modal(document.getElementById('resetWarningModal'));
+    resetWarningModal.show();
+});
 
-
-// Attach the resetQuiz function to the reset button
-document.getElementById("reset-button").addEventListener("click", resetQuiz);
-
+// Confirm reset and call resetQuiz function
+document.getElementById("confirmResetButton").addEventListener("click", function() {
+    resetQuiz();
+    const resetWarningModal = bootstrap.Modal.getInstance(document.getElementById('resetWarningModal'));
+    resetWarningModal.hide();
+});
 
 renderQuiz();
+
+
+// Select the container element
+const container = document.querySelector('.container');
+
+// Get the width of the container
+const containerWidth = container.offsetWidth;
+
+// Select the footer element
+const footer = document.querySelector('.footer-container');
+const header = document.querySelector('.header-container');
+
+// Assign the container width to the footer
+footer.style.width = `${containerWidth}px`;
+header.style.width = `${containerWidth}px`;
