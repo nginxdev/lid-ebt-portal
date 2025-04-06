@@ -40,7 +40,7 @@ function renderQuiz() {
         const card = document.createElement("div");
         card.className = "card";
         card.innerHTML = `
-            <h5>(${item.qNum}) ${item.q}</h5>
+            <h5>(${item.qNum}) ${item.q} ${item.image ? `,<button type="button" onclick="showImageModal('${item.image}')" class="btn btn-outline-success mt-0">Click for Image <i class="bi bi-image"></i></button>` : ""}</h5>
             ${mode === "learning" ? `<p class='text-muted'>${item.tq}</p>` : ""}
             <div class='mt-3 w-100'>
                 ${Object.entries(item.o).map(([key, value]) => `
@@ -163,6 +163,13 @@ function goToPreviousQuestion() {
         document.querySelector(".quiz-container").children[currentQuestion].scrollIntoView({ behavior: "smooth" });
         updateFloatingButton();
     }
+}
+
+function showImageModal(image) {
+    const modalImage = document.getElementById('modalImage');
+    modalImage.src = `../images/${image}`;
+    const imageModal = new bootstrap.Modal(document.getElementById('imageModal'));
+    imageModal.show();
 }
 
 function jumpToQuestion(index) {

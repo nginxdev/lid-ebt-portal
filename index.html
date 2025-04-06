@@ -72,9 +72,10 @@
                 The questions are based on the LiD & EBT course. The answers are not guaranteed to be correct.
                 The purpose of this application is to help you learn and practice the course material.
                 <br><br>
-                Update1: images are not supported yet.
+                Update1: Image support added.
+                Update2: Now using the latest questions from the LiD & EBT course.
                 <br>
-                Build: Canary 0.2.1
+                Build: Beta 1.3.42 Sun Apr 6 2025 11:23:00 GMT+0200
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-outline-danger" id="agreeButton">
@@ -84,7 +85,20 @@
         </div>
     </div>
 </div>
-
+<!-- Image Modal -->
+<div class="modal fade" id="imageModal" tabindex="-1" aria-labelledby="imageModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="imageModalLabel">Image</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <img id="modalImage" src="" alt="Question Image" class="img-fluid">
+            </div>
+        </div>
+    </div>
+</div>
 <script src="./quiz-v2.js"></script>
 <script src="./script.js"></script>
 </body>

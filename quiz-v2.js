@@ -381,7 +381,7 @@ const quizData = [
     },
     {
         "qNum": 21,
-        "id": "21.png",
+        "image": "21.png",
         "q": "Welches ist das Wappen der Bundesrepublik Deutschland?",
         "tq": "Which is the coat of arms of the Federal Republic of Germany?",
         "o": {
