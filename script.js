@@ -133,7 +133,7 @@ function handleAnswer(selected, correct, index, reset = false) {
             feedback.classList.add('text-danger'); // Add red color for incorrect feedback
             incorrectAnswers++;
         }
-        explanation.textContent = quizData[index].r;
+        explanation.textContent = quizDataTemp[index].r;
 
         unansweredQuestions--;  // Decrease unanswered questions when an answer is selected
         updateFloatingCounter();
