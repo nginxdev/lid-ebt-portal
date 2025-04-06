@@ -3287,8 +3287,8 @@ const quizData = [
             "c": "the European Union (EU).",
             "d": "the Warsaw Pact."
         },
-        "a": "b",
-        "r": "The correct answer is 'der Vereinten Nationen (VN).' because the Federal Republic of Germany is a founding member of the United Nations (UN)."
+        "a": "c",
+        "r": "The correct answer is 'der Europäischen Union (EU).' because the Federal Republic of Germany is a founding member of the EU"
     },
     {
         "qNum": 174,
