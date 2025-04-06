@@ -167,7 +167,7 @@ function goToPreviousQuestion() {
 
 function showImageModal(image) {
     const modalImage = document.getElementById('modalImage');
-    modalImage.src = `../images/${image}`;
+    modalImage.src = `images/${image}`;
     const imageModal = new bootstrap.Modal(document.getElementById('imageModal'));
     imageModal.show();
 }
