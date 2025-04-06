@@ -381,6 +381,7 @@ const quizData = [
     },
     {
         "qNum": 21,
+        "id": "21.png",
         "q": "Welches ist das Wappen der Bundesrepublik Deutschland?",
         "tq": "Which is the coat of arms of the Federal Republic of Germany?",
         "o": {
@@ -1027,6 +1028,7 @@ const quizData = [
     },
     {
         "qNum": 55,
+        "image": "55.png",
         "q": "Was zeigt dieses Bild?",
         "tq": "What does this picture show?",
         "o": {
@@ -1312,6 +1314,7 @@ const quizData = [
     },
     {
         "qNum": 70,
+        "image": "70.png",
         "q": "Was gehört zu den Aufgaben der deutschen Bundespräsidentin/des deutschen Bundespräsidenten?",
         "tq": "What are the tasks of the German Federal President?",
         "o": {
@@ -2452,6 +2455,7 @@ const quizData = [
     },
     {
         "qNum": 130,
+        "image": "130.png",
         "q": "Welcher Stimmzettel wäre bei einer Bundestagswahl gültig?",
         "tq": "Which ballot paper would be valid in a federal election?",
         "o": {
@@ -4086,6 +4090,7 @@ const quizData = [
     },
     {
         "qNum": 216,
+        "image": "216.png",
         "q": "Welches Symbol ist im Plenarsaal des Deutschen Bundestages zu sehen?",
         "tq": "Which symbol can be seen in the plenary hall of the German Bundestag?",
         "o": {
@@ -4276,6 +4281,7 @@ const quizData = [
     },
     {
         "qNum": 226,
+        "image": "226.png",
         "q": "Welche ist die Flagge der Europäischen Union?",
         "tq": "Which is the flag of the European Union?",
         "o": {
