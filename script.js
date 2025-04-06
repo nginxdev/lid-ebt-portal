@@ -38,7 +38,7 @@ function renderQuiz() {
 
     quizData.forEach((item, index) => {
         const card = document.createElement("div");
-        card.className = "card";
+        card.className = "card overflow-scrolling";
         card.innerHTML = `
             <h5>(${item.qNum}) ${item.q} ${item.image ? `,<button type="button" onclick="showImageModal('${item.image}')" class="btn btn-outline-success mt-0">Click for Image <i class="bi bi-image"></i></button>` : ""}</h5>
             ${mode === "learning" ? `<p class='text-muted mb-0'>${item.tq}</p>` : ""}

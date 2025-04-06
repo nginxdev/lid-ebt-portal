@@ -137,6 +137,11 @@ footer {
     padding: 0 12px;
 }
 
+.overflow-scrolling{
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
 /* Responsive styles */
 @media (max-width: 576px) {
     .h5, h5, button, .btn, p {
