@@ -271,5 +271,3 @@ const header = document.querySelector('.header-container');
 // Assign the container width to the footer
 footer.style.width = `${containerWidth}px`;
 header.style.width = `${containerWidth}px`;
-
-startFireworks(32,5000);
